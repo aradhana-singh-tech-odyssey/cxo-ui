@@ -5,9 +5,9 @@ import federation from '@originjs/vite-plugin-federation';
 export default defineConfig({
   plugins: [
     react({
-      jsxImportSource: '@emotion/react',
+      jsxRuntime: 'classic',
       babel: {
-        plugins: ['@babel/plugin-transform-react-jsx']
+        presets: ['@babel/preset-react']
       }
     }),
     federation({
@@ -21,32 +21,35 @@ export default defineConfig({
       shared: ['react', 'react-dom', 'react-router-dom'],
     }),
   ],
+  resolve: {
+    extensions: ['.js', '.jsx', '.json']
+  },
   esbuild: {
     loader: 'jsx',
     include: /src\/.*\.jsx?$/,
     exclude: [],
   },
-  resolve: {
-    extensions: ['.js', '.jsx', '.json'],
-  },
-  build: {
-    target: 'esnext',
-    minify: false,
-    commonjsOptions: {
-      transformMixedEsModules: true,
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        '.js': 'jsx',
+      },
     },
   },
   server: {
     port: 3000,
     strictPort: true,
     hmr: {
-      port: 3002,
-      protocol: 'ws',
-      host: 'localhost',
+      port: 3000,
     },
   },
   preview: {
     port: 3000,
     strictPort: true,
+  },
+  build: {
+    target: 'esnext',
+    minify: false,
+    cssCodeSplit: false,
   },
 });
